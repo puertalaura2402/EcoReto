@@ -13,5 +13,5 @@ Aplicación web gamificada desarrollada en ASP.NET que promueve hábitos sosteni
 - Seguimiento de progreso
 
 ## Autoras
-Laura Puerta Arboleda
-Mariana Muñoz Chaparro
+-Laura Puerta Arboleda
+-Mariana Muñoz Chaparro

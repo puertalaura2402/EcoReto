@@ -1,0 +1,110 @@
+﻿@model IEnumerable<EcoReto.Models.Mision>
+@{
+    ViewBag.Title = "Mi Perfil - EcoReto";
+}
+
+<h2 class="text-center mb-4">🌱 Mi Perfil EcoReto</h2>
+<BR />
+<BR />
+<BR />
+<div class="text-center mb-4">
+    <a href="@Url.Action("Index", "Insignias")" class="btn btn-success">
+        🏅 Ver Insignias
+    </a>
+</div>
+<BR />
+
+
+<div class="card p-4 shadow-sm mb-4">
+    <h4>Puntaje Total: <strong>@ViewBag.PuntajeTotal puntos</strong></h4>
+</div>
+
+@if (TempData["MensajeExito"] != null)
+{
+    <div class="alert alert-success text-center mt-3">
+        @TempData["MensajeExito"]
+    </div>
+}
+<BR />
+<BR />
+<BR />
+
+
+
+<BR />
+<BR />
+<form method="get" action="@Url.Action("Index", "Perfil")" class="row g-3 mb-3">
+
+    <div class="col-md-4">
+        <select name="idCategoria" class="form-select">
+            <option value="">Todas las categorías</option>
+
+            @foreach (var c in ViewBag.Categorias)
+            {
+                <option value="@c.IdCategoria"
+                        @(ViewBag.IdCategoriaSeleccionada == c.IdCategoria ? "selected" : "")>
+                    @c.NombreCategoria
+                </option>
+            }
+        </select>
+    </div>
+
+    <div class="col-md-2">
+        <button class="btn btn-success">🔍 Filtrar</button>
+    </div>
+
+</form>
+
+
+<h3 class="mt-4 text-success">Misiones Disponibles</h3>
+<table class="table table-bordered text-center align-middle mt-3">
+    <thead class="table-success">
+        <tr>
+            <th>Título</th>
+            <th>Descripción</th>
+            <th>Categoría</th>
+            <th>Puntos</th>
+            <th>Acción</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var m in Model)
+        {
+            <tr>
+                <td>@m.Titulo</td>
+                <td class="text-start">@m.Descripcion</td>
+                <td>@m.CategoriaNombre</td>
+                <td>@m.Puntos</td>
+                <td>
+                    <form action="@Url.Action("CompletarMision", "Perfil")" method="post">
+                        <input type="hidden" name="id" value="@m.IdMision" />
+                        <button type="submit" class="btn btn-success btn-sm">✅ Completar</button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<h3 class="mt-5 text-primary">Misiones Completadas</h3>
+<table class="table table-bordered text-center align-middle mt-3">
+    <thead class="table-info">
+        <tr>
+            <th>Título</th>
+            <th>Descripción</th>
+            <th>Categoría</th>
+            <th>Puntos</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var c in (List<EcoReto.Models.Mision>)ViewBag.MisionesCompletadas)
+        {
+            <tr>
+                <td>@c.Titulo</td>
+                <td class="text-start">@c.Descripcion</td>
+                <td>@c.CategoriaNombre</td>
+                <td>@c.Puntos</td>
+            </tr>
+        }
+    </tbody>
+</table>

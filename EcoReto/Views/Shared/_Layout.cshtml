@@ -1,0 +1,122 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>@ViewBag.Title - Eco Reto</title>
+
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+
+    <!-- Iconos de Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet" />
+
+    <!-- Fuente Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet" />
+
+    <!-- Tu hoja de estilos personalizada -->
+    <link href="~/Content/sites.css" rel="stylesheet" type="text/css" />
+</head>
+
+<body>
+    <!-- ====== NAVBAR ====== -->
+    <nav class="navbar navbar-expand-lg navbar-dark  shadow-sm">
+        <div class="container">
+            <a class="navbar-brand fw-semibold" href="/">
+                <i class="bi bi-globe-americas me-2"></i>Eco Reto
+            </a>
+
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    @if (Session["Usuario"] == null)
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link" href="/Account/Login">Iniciar Sesión</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/Account/Register">Registrarse</a>
+                        </li>
+                    }
+                    else
+                    {
+                        <li class="nav-item me-3 text-white">
+                            Bienvenido, @Session["Usuario"]
+                        </li>
+                        <li class="nav-item dropdown me-2">
+                            <a class="nav-link position-relative" href="@Url.Action("Index", "Notificaciones")" id="notificacionesLink" style="color: white;">
+                                <i class="bi bi-bell-fill" style="font-size: 1.2rem;"></i>
+                                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" id="notificacionesBadge" style="display: none;">
+                                    0
+                                </span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="btn btn-outline-light" href="/Account/Logout">Cerrar sesión</a>
+                        </li>
+                    }
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+
+
+    <!-- ====== CONTENIDO PRINCIPAL ====== -->
+    <main class="container mt-4 mb-5">
+        @RenderBody()
+    </main>
+
+    <!-- ====== FOOTER ====== -->
+    <footer class="footer text-white text-center py-3 mt-auto">
+        <div class="container">
+            <small>© @DateTime.Now.Year - Eco Reto | Mariana Muñoz y Laura Puerta 🌱</small>
+        </div>
+    </footer>
+
+    <!-- ====== SCRIPTS ====== -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Validación de formularios (jQuery Validation) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/jquery.validate.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/4.0.0/jquery.validate.unobtrusive.min.js"></script>
+
+    @* Script para actualizar contador de notificaciones *@
+    @if (Session["Usuario"] != null)
+    {
+        <script>
+            $(document).ready(function() {
+                function actualizarContadorNotificaciones() {
+                    $.ajax({
+                        url: '@Url.Action("Contador", "Notificaciones")',
+                        type: 'GET',
+                        success: function(data) {
+                            var badge = $('#notificacionesBadge');
+                            if (data.count > 0) {
+                                badge.text(data.count).show();
+                            } else {
+                                badge.hide();
+                            }
+                        }
+                    });
+                }
+
+                // Actualizar al cargar la página
+                actualizarContadorNotificaciones();
+
+                // Actualizar cada 30 segundos
+                setInterval(actualizarContadorNotificaciones, 30000);
+            });
+        </script>
+    }
+    @RenderSection("Scripts", required: false)
+</body>
+</html>

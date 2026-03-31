@@ -1,0 +1,110 @@
+﻿@model IEnumerable<EcoReto.Models.Notificacion>
+@{
+    ViewBag.Title = "Notificaciones";
+}
+
+<h2 class="text-center mb-4">🔔 Mis Notificaciones</h2>
+
+@if (ViewBag.NoLeidas != null && ViewBag.NoLeidas > 0)
+{
+    <div class="text-end mb-3">
+        <button id="marcarTodasLeidas" class="btn btn-sm btn-outline-secondary">
+            <i class="bi bi-check-all"></i> Marcar todas como leídas
+        </button>
+    </div>
+}
+
+@if (Model == null || !Model.Any())
+{
+    <div class="alert alert-info text-center">
+        <i class="bi bi-inbox" style="font-size: 3rem;"></i>
+        <p class="mt-3">No tienes notificaciones</p>
+    </div>
+}
+else
+{
+    <div class="list-group">
+        @foreach (var notificacion in Model)
+        {
+            <div class="list-group-item list-group-item-action @(!notificacion.Leida ? "list-group-item-primary" : "")"
+                 data-id="@notificacion.IdNotificacion"
+                 style="cursor: pointer; @(!notificacion.Leida ? "font-weight: bold;" : "")">
+                <div class="d-flex w-100 justify-content-between align-items-start">
+                    <div class="flex-grow-1">
+                        <div class="d-flex align-items-center mb-2">
+                            <span class="me-2" style="font-size: 1.5rem;">@notificacion.Icono</span>
+                            @if (!string.IsNullOrEmpty(notificacion.ImagenPath))
+                            {
+                                <img src="@notificacion.ImagenPath" alt="" style="width: 40px; height: 40px; object-fit: contain; margin-right: 10px; border-radius: 5px;" />
+                            }
+                            <h5 class="mb-1">@notificacion.Titulo</h5>
+                            @if (!notificacion.Leida)
+                            {
+                                <span class="badge bg-danger ms-2">Nueva</span>
+                            }
+                        </div>
+                        <p class="mb-1">@notificacion.Mensaje</p>
+                        <small class="text-muted">@notificacion.FechaCreacion.ToString("dd/MM/yyyy HH:mm")</small>
+                    </div>
+                    @if (!notificacion.Leida)
+                    {
+                        <button class="btn btn-sm btn-outline-secondary ms-2 marcar-leida" data-id="@notificacion.IdNotificacion">
+                            <i class="bi bi-check"></i> Marcar como leída
+                        </button>
+                    }
+                </div>
+            </div>
+        }
+    </div>
+}
+
+@section Scripts {
+    <script>
+        $(document).ready(function() {
+            // Marcar una notificación como leída
+            $('.marcar-leida').click(function(e) {
+                e.stopPropagation();
+                var id = $(this).data('id');
+                var item = $(this).closest('.list-group-item');
+
+                $.ajax({
+                    url: '@Url.Action("MarcarLeida", "Notificaciones")',
+                    type: 'POST',
+                    data: { id: id },
+                    success: function(data) {
+                        if (data.success) {
+                            item.removeClass('list-group-item-primary').addClass('list-group-item-secondary');
+                            item.css('font-weight', 'normal');
+                            item.find('.badge').remove();
+                            item.find('.marcar-leida').remove();
+                            var badge = $('#notificacionesBadge');
+                            if (badge.length) {
+                                badge.text(data.noLeidas);
+                                if (data.noLeidas == 0) {
+                                    badge.hide();
+                                } else {
+                                    badge.show();
+                                }
+                            }
+                        }
+                    }
+                });
+            });
+
+            // Marcar todas como leídas
+            $('#marcarTodasLeidas').click(function() {
+                $.ajax({
+                    url: '@Url.Action("MarcarTodasLeidas", "Notificaciones")',
+                    type: 'POST',
+                    success: function(data) {
+                        if (data.success) {
+                            location.reload();
+                        }
+                    }
+                });
+            });
+        });
+    </script>
+}
+<BR /><BR />
+<a href="@Url.Action("Index", "Perfil")" class="btn btn-primary">Ir al inicio</a>

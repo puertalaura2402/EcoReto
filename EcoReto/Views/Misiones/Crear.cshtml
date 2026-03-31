@@ -1,0 +1,43 @@
+﻿@model EcoReto.Models.Mision
+@{
+    ViewBag.Title = "Crear Misión";
+}
+
+<h2 class="text-center mb-4">➕ Crear Nueva Misión</h2>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="card p-4 shadow-sm mx-auto" style="max-width: 600px;">
+        <div class="mb-3">
+            @Html.LabelFor(m => m.Titulo)
+            @Html.TextBoxFor(m => m.Titulo, new { @class = "form-control" })
+            @Html.ValidationMessageFor(m => m.Titulo, "", new { @class = "text-danger" })
+        </div>
+
+        <div class="mb-3">
+            @Html.LabelFor(m => m.Descripcion)
+            @Html.TextAreaFor(m => m.Descripcion, new { @class = "form-control", rows = 4 })
+            @Html.ValidationMessageFor(m => m.Descripcion, "", new { @class = "text-danger" })
+        </div>
+
+        <div class="mb-3">
+            @Html.LabelFor(m => m.Puntos)
+            @Html.TextBoxFor(m => m.Puntos, new { @class = "form-control", type = "number" })
+            @Html.ValidationMessageFor(m => m.Puntos, "", new { @class = "text-danger" })
+        </div>
+
+        <div class="mb-3">
+            @Html.LabelFor(m => m.IdCategoria, "Categoría")
+            @Html.DropDownListFor(m => m.IdCategoria,
+                (IEnumerable<SelectListItem>)ViewBag.Categorias,
+                "-- Selecciona una categoría --",
+                new { @class = "form-control" })
+            @Html.ValidationMessageFor(m => m.IdCategoria, "", new { @class = "text-danger" })
+        </div>
+
+        <button type="submit" class="btn btn-success w-100 mt-2">Guardar Misión 🌱</button>
+        <a href="@Url.Action("Index")" class="btn btn-secondary w-100 mt-2">Cancelar</a>
+    </div>
+}

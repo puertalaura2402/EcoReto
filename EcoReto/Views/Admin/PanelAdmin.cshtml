@@ -1,0 +1,27 @@
+﻿@{
+    ViewBag.Title = "Panel de Administración - EcoReto";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2 class="text-center mb-4">🌿 Panel de Administración</h2>
+
+<div class="container mt-4">
+    <div class="row g-4 justify-content-center">
+        <div class="col-md-5">
+            <div class="card text-center p-4">
+                <h4>👥 Gestión de Usuarios</h4>
+                <p>Administra los usuarios registrados en EcoReto.</p>
+                <a href="@Url.Action("Index", "Usuarios")" class="btn btn-primary">Ir a Usuarios</a>
+            </div>
+        </div>
+
+        <div class="col-md-5">
+            <div class="card text-center p-4">
+                <h4>🌱 Misiones Ambientales</h4>
+                <p>Crea, edita o elimina misiones ecológicas del sistema.</p>
+                <a href="@Url.Action("Index", "Misiones")" class="btn btn-primary">Ir a Misiones</a>
+            </div>
+        </div>
+    </div>
+</div>
+

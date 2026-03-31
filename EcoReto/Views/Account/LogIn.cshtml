@@ -1,0 +1,81 @@
+﻿@model EcoReto.Models.Usuario
+@{
+    ViewBag.Title = "Iniciar Sesión - EcoReto";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="card mx-auto mt-5 eco-card" style="max-width: 420px;">
+    <div class="text-center mb-3">
+        <i class="bi bi-leaf" style="font-size: 3rem; color: #2e7d32;"></i>
+        <h2 class="mt-2">Bienvenido a <span style="color:#388e3c;">EcoReto</span></h2>
+        <p class="text-muted">Conéctate y empieza tu misión por el planeta 🌎</p>
+    </div>
+
+
+
+
+    @using (Html.BeginForm("Login", "Account", FormMethod.Post))
+    {
+        @Html.AntiForgeryToken()
+
+        <div class="form-group mb-3">
+            @Html.LabelFor(m => m.UsuarioNombre)
+            @Html.TextBoxFor(m => m.UsuarioNombre, new { @class = "form-control", placeholder = "Nombre de usuario" })
+            @Html.ValidationMessageFor(m => m.UsuarioNombre, "", new { @class = "text-danger" })
+        </div>
+
+        <div class="form-group mb-3">
+            @Html.LabelFor(m => m.Contraseña)
+            <div class="input-group">
+                @Html.PasswordFor(m => m.Contraseña, new { @class = "form-control", placeholder = "Contraseña" })
+                <button class="btn btn-outline-secondary" type="button" id="togglePasswordLogin">
+                    <i class="bi bi-eye" id="eyeIconLogin"></i>
+                </button>
+            </div>
+            @Html.ValidationMessageFor(m => m.Contraseña, "", new { @class = "text-danger" })
+        </div>
+
+        <div class="form-group mb-3">
+            @Html.LabelFor(m => m.Rol)
+            @Html.DropDownListFor(m => m.Rol, new SelectList(new[]
+            {
+                new { Value = "Usuario", Text = "Usuario" },
+                new { Value = "Administrador", Text = "Administrador" }
+            }, "Value", "Text"), "Seleccione su rol", new { @class = "form-control" })
+            @Html.ValidationMessageFor(m => m.Rol, "", new { @class = "text-danger" })
+        </div>
+
+        <button type="submit" class="btn w-100 eco-btn">Iniciar Sesión</button>
+
+        <div class="text-center mt-3">
+            <p>
+                ¿No tienes una cuenta?
+                <a href="/Account/Register" class="eco-link">Regístrate aquí</a>
+            </p>
+        </div>
+
+        if (ViewBag.Error != null)
+        {
+            <div class="alert alert-danger text-center mt-3">@ViewBag.Error</div>
+        }
+    }
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function() {
+            $('#togglePasswordLogin').click(function() {
+                var passwordField = $(this).closest('.input-group').find('input[type="password"], input[type="text"]');
+                var eyeIcon = $('#eyeIconLogin');
+
+                if (passwordField.attr('type') === 'password') {
+                    passwordField.attr('type', 'text');
+                    eyeIcon.removeClass('bi-eye').addClass('bi-eye-slash');
+                } else {
+                    passwordField.attr('type', 'password');
+                    eyeIcon.removeClass('bi-eye-slash').addClass('bi-eye');
+                }
+            });
+        });
+    </script>
+}

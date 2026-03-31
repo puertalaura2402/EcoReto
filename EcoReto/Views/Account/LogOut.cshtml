@@ -1,0 +1,17 @@
+﻿@{
+    ViewBag.Title = "Cierre de Sesión - EcoReto";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="logout-container">
+    <div class="logout-card shadow">
+        <h2 class="logout-title">🌿 ¡Hasta pronto!</h2>
+        <p class="logout-text">
+            Has cerrado sesión exitosamente.
+            Gracias por ser parte de <strong>EcoReto</strong> y contribuir a un planeta más verde 🌎.
+        </p>
+        <div class="logout-buttons">
+            <a href="@Url.Action("Login", "Account")" class="btn btn-primary">Iniciar sesión nuevamente</a>
+        </div>
+    </div>
+</div>

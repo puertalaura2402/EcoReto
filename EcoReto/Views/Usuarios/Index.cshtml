@@ -1,0 +1,111 @@
+﻿@model IEnumerable<EcoReto.Models.Usuario>
+@{
+    ViewBag.Title = "Gestión de Usuarios";
+}
+
+<h2 class="text-center mb-4">👥 Gestión de Usuarios</h2>
+<BR />
+<BR />
+<div class="text-center mb-4">
+    <a href="@Url.Action("Index", "Insignias")" class="btn btn-success">
+        🏅 Ver Insignias
+    </a>
+</div>
+<BR />
+
+@if (TempData["MensajeExito"] != null)
+{
+    <div class="alert alert-success text-center">@TempData["MensajeExito"]</div>
+}
+
+<style>
+    .insignias-usuario {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .insignia-mini {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        overflow: hidden;
+        border: 2px solid #4caf50;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: white;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+        .insignia-mini img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+    .sin-insignias {
+        color: #999;
+        font-style: italic;
+        font-size: 0.9rem;
+    }
+</style>
+
+<table class="table table-striped table-bordered text-center align-middle">
+    <thead class="table-success">
+        <tr>
+            <th>Nombre de Usuario</th>
+            <th>Correo</th>
+            <th>Rol</th>
+            <th>🏅 Insignias</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        @{
+            var insigniasPorUsuario = ViewBag.InsigniasPorUsuario as Dictionary<int, List<EcoReto.Models.Insignia>>;
+        }
+        @foreach (var u in Model)
+        {
+            var insigniasUsuario = insigniasPorUsuario != null && insigniasPorUsuario.ContainsKey(u.IdUsuario)
+                ? insigniasPorUsuario[u.IdUsuario]
+                : new List<EcoReto.Models.Insignia>();
+
+            <tr>
+                <td>@u.UsuarioNombre</td>
+                <td>@u.Email</td>
+                <td>@u.Rol</td>
+                <td>
+                    @if (insigniasUsuario != null && insigniasUsuario.Count > 0)
+                    {
+                        <div class="insignias-usuario" title="@string.Join(", ", insigniasUsuario.Select(i => i.Nombre))">
+                            @foreach (var insignia in insigniasUsuario.Take(5))
+                            {
+                                <div class="insignia-mini">
+                                    <img src="@insignia.ImagenPath" alt="@insignia.Nombre" title="@insignia.Nombre" />
+                                </div>
+                            }
+                            @if (insigniasUsuario.Count > 5)
+                            {
+                                <span class="badge bg-success">+@(insigniasUsuario.Count - 5)</span>
+                            }
+                        </div>
+                    }
+                    else
+                    {
+                        <span class="sin-insignias">Sin insignias</span>
+                    }
+                </td>
+                <td>
+                    <a href="@Url.Action("Actividad", new { id = u.IdUsuario })" class="btn btn-outline-info btn-sm">📊 Ver Actividad</a>
+                    <a href="@Url.Action("Eliminar", new { id = u.IdUsuario })" class="btn btn-outline-danger btn-sm">🗑️ Eliminar</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+<BR />
+<BR />
+<a href="@Url.Action("PanelAdmin", "Admin")" class="btn btn-primary">Ir al inicio</a>
